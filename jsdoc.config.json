@@ -1,0 +1,6 @@
+{
+    "sources": {
+        "included": ["."],
+        "excluded": ["./node_modules"]
+    }
+}
