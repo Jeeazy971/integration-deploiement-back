@@ -1,6 +1,11 @@
 {
-    "sources": {
-        "included": ["."],
-        "excluded": ["./node_modules"]
+    "source": {
+        "include": ["module.js"],
+        "exclude": ["./node_modules"],
+        "includePattern": ".+\\.js(doc|x)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "opts": {
+        "destination": "./docs"
     }
 }
