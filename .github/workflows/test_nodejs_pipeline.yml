@@ -30,7 +30,7 @@ jobs:
             - name: Run Jest tests with coverage
               run: npx jest --coverage --coverageDirectory=coverage
 
-            # Ajout d'une commande ls pour vérifier la structure du répertoire coverage
+            # Vérification de la structure du répertoire coverage
             - name: List files in coverage directory
               run: ls -R ./coverage
 
@@ -59,9 +59,9 @@ jobs:
               with:
                   node-version: 20.x
 
-            # Génération de la documentation JSDoc
+            # Génération de la documentation JSDoc avec npx
             - name: Generate JSDoc documentation
-              run: npm run jsdoc
+              run: npx jsdoc -R ./README.md -c ./jsdoc.config.json -r -d ./docs
 
             # Ajout de l'étape pour vérifier le contenu du fichier lcov.info
             - name: Verify lcov.info content
