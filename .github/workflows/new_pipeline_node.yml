@@ -61,7 +61,7 @@ jobs:
 
             # Génération de la documentation JSDoc avec npx
             - name: Generate JSDoc documentation
-              run: npx jsdoc -R ./README.md -c ./jsdoc.config.json -r -d ./docs
+              run: npx jsdoc -R ./README.md -c ./jsdoc.config.json -r -d ./public/docs
 
             # Ajout de l'étape pour vérifier le contenu du fichier lcov.info
             - name: Verify lcov.info content

@@ -4,7 +4,7 @@
     "main": "module.js",
     "scripts": {
         "test": "jest --coverage",
-        "jsdoc": "npx jsdoc -R ./README.md -c ./jsdoc.config.json -r -d ./docs"
+        "jsdoc": "npx jsdoc -R ./README.md -c ./jsdoc.config.json -r -d ./public/docs"
     },
     "keywords": [],
     "author": "Josué BAYIDIKILA",
