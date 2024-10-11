@@ -30,6 +30,10 @@ jobs:
             - name: Run Jest tests with coverage
               run: npx jest --coverage --coverageDirectory=coverage
 
+            # Ajout d'une commande ls pour vérifier la structure du répertoire coverage
+            - name: List files in coverage directory
+              run: ls -R ./coverage
+
             - name: Check exact path of lcov.info
               run: realpath ./coverage/lcov.info
 
