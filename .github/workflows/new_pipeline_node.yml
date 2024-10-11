@@ -1,0 +1,79 @@
+name: Node.js CI/CD Pipeline
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [20.x, 21.x]
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Set up Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Run Jest tests with coverage
+              run: npx jest --coverage --coverageDirectory=coverage
+
+            # Ajout d'une commande ls pour vérifier la structure du répertoire coverage
+            - name: List files in coverage directory
+              run: ls -R ./coverage
+
+            - name: Check exact path of lcov.info
+              run: realpath ./coverage/lcov.info
+
+            - name: List files before Codecov upload
+              run: ls -l /home/runner/work/integration-deploiement-back/integration-deploiement-back/coverage
+
+            - name: Upload Jest coverage report
+              if: success()
+              uses: actions/upload-artifact@v3
+              with:
+                  name: coverage-report
+                  path: coverage
+
+    generate-docs:
+        runs-on: ubuntu-latest
+        needs: test
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Set up Node.js 20.x
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 20.x
+
+            # Génération de la documentation JSDoc avec npx
+            - name: Generate JSDoc documentation
+              run: npx jsdoc -R ./README.md -c ./jsdoc.config.json -r -d ./docs
+
+            # Ajout de l'étape pour vérifier le contenu du fichier lcov.info
+            - name: Verify lcov.info content
+              run: cat ./coverage/lcov.info
+
+            - name: Upload coverage reports to Codecov
+              run: bash <(curl -s https://codecov.io/bash) -f ./coverage/lcov.info -t ${{ secrets.CODECOV_TOKEN }} -Z
+
+            # Ajout de l'étape pour déployer la documentation sur GitHub Pages
+            - name: Upload documentation to GitHub Pages
+              uses: peaceiris/actions-gh-pages@v3
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./docs
+                  publish_branch: gh-pages
