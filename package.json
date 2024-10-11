@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "main": "module.js",
     "scripts": {
-        "test": "jest --transformIgnorePatterns 'node_modules/' --coverage",
+        "test": "jest --coverage",
         "jsdoc": "jsdoc -c ./jsdoc.config.json -r -d ./docs"
     },
     "keywords": [],
