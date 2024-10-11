@@ -1,65 +1,73 @@
 name: Node.js CI/CD Pipeline
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x, 21.x]
+    test:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [20.x, 21.x]
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
 
-    - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
+            - name: Set up Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies
-      run: npm install
+            - name: Install dependencies
+              run: npm install
 
-    - name: Run Jest tests
-      run: npm run test
+            - name: Run Jest tests with coverage
+              run: npm run test
 
-  generate-docs:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+            - name: Upload Jest coverage report
+              if: success()
+              uses: actions/upload-artifact@v3
+              with:
+                  name: coverage-report
+                  path: coverage
 
-    - name: Set up Node.js 20.x
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20.x
+    generate-docs:
+        runs-on: ubuntu-latest
+        needs: test
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
 
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v3
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+            - name: Set up Node.js 20.x
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 20.x
 
-  deploy-docs:
-    runs-on: ubuntu-latest
-    needs: generate-docs
-    steps:
+            - name: Upload coverage reports to Codecov
+              uses: codecov/codecov-action@v3
+              with:
+                  files: ./coverage/lcov.info
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-    - name: Install dependencies
-      run: npm install
+    deploy-docs:
+        runs-on: ubuntu-latest
+        needs: generate-docs
+        steps:
+            - name: Install dependencies
+              run: npm install
 
-    - name: Generate JSDoc documentation
-      run: npm run jsdoc
+            - name: Generate JSDoc documentation
+              run: npm run jsdoc
 
-    - name: Upload JSDoc artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: jsdoc
-        path: ./docs
+            - name: Upload JSDoc artifacts
+              uses: actions/upload-artifact@v3
+              with:
+                  name: jsdoc
+                  path: ./docs
