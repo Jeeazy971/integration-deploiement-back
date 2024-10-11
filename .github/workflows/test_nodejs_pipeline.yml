@@ -55,5 +55,9 @@ jobs:
               with:
                   node-version: 20.x
 
+            # Ajout de l'étape pour vérifier le contenu du fichier lcov.info
+            - name: Verify lcov.info content
+              run: cat ./coverage/lcov.info
+
             - name: Upload coverage reports to Codecov
-              run: bash <(curl -s https://codecov.io/bash) -f /home/runner/work/integration-deploiement-back/integration-deploiement-back/coverage/lcov.info -t ${{ secrets.CODECOV_TOKEN }} -Z
+              run: bash <(curl -s https://codecov.io/bash) -f ./coverage/lcov.info -t ${{ secrets.CODECOV_TOKEN }} -Z
