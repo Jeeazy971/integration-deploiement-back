@@ -33,6 +33,9 @@ jobs:
             - name: Check exact path of lcov.info
               run: realpath ./coverage/lcov.info
 
+            - name: List files before Codecov upload
+              run: ls -l /home/runner/work/integration-deploiement-back/integration-deploiement-back/coverage
+
             - name: Upload Jest coverage report
               if: success()
               uses: actions/upload-artifact@v3
@@ -53,4 +56,4 @@ jobs:
                   node-version: 20.x
 
             - name: Upload coverage reports to Codecov
-              run: bash <(curl -s https://codecov.io/bash) -f ./coverage/lcov.info -t ${{ secrets.CODECOV_TOKEN }}
+              run: bash <(curl -s https://codecov.io/bash) -f /home/runner/work/integration-deploiement-back/integration-deploiement-back/coverage/lcov.info -t ${{ secrets.CODECOV_TOKEN }} -Z
