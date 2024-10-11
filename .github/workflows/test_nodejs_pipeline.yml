@@ -30,7 +30,7 @@ jobs:
             - name: Run Jest tests with coverage
               run: npx jest --coverage --coverageDirectory=coverage
 
-            # Vérification de la structure du répertoire coverage
+            # Ajout d'une commande ls pour vérifier la structure du répertoire coverage
             - name: List files in coverage directory
               run: ls -R ./coverage
 
@@ -61,7 +61,11 @@ jobs:
 
             # Génération de la documentation JSDoc avec npx
             - name: Generate JSDoc documentation
-              run: npx jsdoc -R ./README.md -c ./jsdoc.config.json -r -d ./docs
+              run: npm run jsdoc
+
+            # Vérification de l'existence du répertoire ./public/docs
+            - name: List generated documentation files
+              run: ls -R ./public/docs
 
             # Ajout de l'étape pour vérifier le contenu du fichier lcov.info
             - name: Verify lcov.info content
@@ -75,4 +79,5 @@ jobs:
               uses: peaceiris/actions-gh-pages@v3
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
-                  publish_dir: ./docs
+                  publish_dir: ./public/docs # Mise à jour du chemin vers ./public/docs
+                  publish_branch: gh-pages
