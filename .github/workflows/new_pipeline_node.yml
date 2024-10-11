@@ -77,3 +77,5 @@ jobs:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   publish_dir: ./docs
                   publish_branch: gh-pages
+                  # Cette option permet de forcer la création de la branche 'gh-pages' si elle n'existe pas
+                  force_orphan: true
