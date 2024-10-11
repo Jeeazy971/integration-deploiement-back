@@ -59,9 +59,20 @@ jobs:
               with:
                   node-version: 20.x
 
+            # Génération de la documentation JSDoc
+            - name: Generate JSDoc documentation
+              run: npm run jsdoc
+
             # Ajout de l'étape pour vérifier le contenu du fichier lcov.info
             - name: Verify lcov.info content
               run: cat ./coverage/lcov.info
 
             - name: Upload coverage reports to Codecov
               run: bash <(curl -s https://codecov.io/bash) -f ./coverage/lcov.info -t ${{ secrets.CODECOV_TOKEN }} -Z
+
+            # Ajout de l'étape pour déployer la documentation sur GitHub Pages
+            - name: Upload documentation to GitHub Pages
+              uses: peaceiris/actions-gh-pages@v3
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./docs
