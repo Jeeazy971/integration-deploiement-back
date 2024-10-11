@@ -28,10 +28,11 @@ jobs:
               run: npm install
 
             - name: Run Jest tests with coverage
-              run: npx jest --coverage
+              run: npx jest --coverage --coverageDirectory=coverage
+              working-directory: ./ # Assure que le contexte est correct
 
             - name: Check if lcov.info exists
-              run: ls -l coverage
+              run: find . -name "lcov.info" # Recherche le fichier partout dans le projet
 
             - name: Upload Jest coverage report
               if: success()
